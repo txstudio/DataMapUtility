@@ -42,6 +42,42 @@ namespace DataMapUtility.Test
         }
 
         [TestMethod]
+        public void Read_To_Min_Object_Property()
+        {
+            var _table = this._userManager.GetUserTable();
+            var _users = DataMapUtility.MapFromTable<UserMin>(_table);
+
+            foreach (var _user in _users)
+            {
+                Assert.AreNotEqual<int>(_user.No, 0);
+                Assert.AreNotEqual<string>(_user.LastName, string.Empty);
+            }
+        }
+
+        [TestMethod]
+        public void Read_To_More_Object_Property()
+        {
+            var _table = this._userManager.GetUserTable();
+            var _users = DataMapUtility.MapFromTable<UserMore>(_table);
+            var _isEmpty = false;
+
+            foreach (var _user in _users)
+            {
+                _isEmpty = string.IsNullOrWhiteSpace(_user.Company);
+
+                Assert.AreEqual<bool>(_isEmpty, true);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Read_To_Error_Property()
+        {
+            var _table = this._userManager.GetUserTable();
+            var _users = DataMapUtility.MapFromTable<UserWithErrorDataType>(_table);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
         public void Read_From_Null_Table()
         {
