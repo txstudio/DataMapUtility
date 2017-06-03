@@ -8,13 +8,15 @@ namespace DataMapUtility.Test
 {
     [TestClass]
     public class MapFromReader : TestProvider
-    { 
-        [TestMethod]
-        public void Read_From_Standard_Reader()
+    {
+        private IDataReader _reader;
+        
+        [TestInitialize]
+        public void Setup()
         {
             MockRepository _mock = new MockRepository();
 
-            var _reader = _mock.StrictMock<IDataReader>();
+            _reader = _mock.StrictMock<IDataReader>();
 
             Expect.Call(_reader.Read()).Return(true).Repeat.Times(3);
             Expect.Call(_reader.Read()).Return(false);
@@ -51,8 +53,11 @@ namespace DataMapUtility.Test
 
 
             _mock.ReplayAll();
+        }
 
-
+        [TestMethod]
+        public void Read_From_Standard_Reader()
+        {
             string _expected;
             string _actual;
             
@@ -65,6 +70,40 @@ namespace DataMapUtility.Test
 
             Assert.AreEqual(_expected, _actual);
         }
+        
+        [TestMethod]
+        public void Read_To_Min_Object_Property()
+        {
+            var _users = DataMapUtility.MapFromReader<UserMin>(_reader);
+
+            foreach (var _user in _users)
+            {
+                Assert.AreNotEqual<int>(_user.No, 0);
+                Assert.AreNotEqual<string>(_user.LastName, string.Empty);
+            }
+        }
+        
+        [TestMethod]
+        public void Read_To_More_Object_Property()
+        {
+            var _users = DataMapUtility.MapFromReader<UserMore>(_reader);
+            var _isEmpty = false;
+
+            foreach (var _user in _users)
+            {
+                _isEmpty = string.IsNullOrWhiteSpace(_user.Company);
+
+                Assert.AreEqual<bool>(_isEmpty, true);
+            }
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Read_To_Error_Property()
+        {
+            var _users = DataMapUtility.MapFromReader<UserWithErrorDataType>(_reader);
+        }
+
 
         [TestMethod]
         public void Read_From_Empty_Reader()
