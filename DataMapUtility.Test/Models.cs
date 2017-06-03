@@ -21,6 +21,30 @@ namespace DataMapUtility.Test
         public Nullable<DateTime> Birthday { get; set; }
     }
 
+    public sealed class UserMin
+    {
+        public int No { get; set; }
+        public string LastName { get; set; }
+    }
+
+    public sealed class UserMore
+    {
+        public int No { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public Nullable<DateTime> Birthday { get; set; }
+        public string Company { get; set; }
+    }
+
+    public sealed class UserWithErrorDataType
+    {
+        public int No { get; set; }
+        public string LastName { get; set; }
+        public string Birthday { get; set; }
+    }
+
+
+
     public sealed class UserManager
     {
         private List<User> _users;
